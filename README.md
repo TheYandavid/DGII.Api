@@ -42,6 +42,7 @@ Middleware/        Manejo global de errores
 Models/            Entidades de dominio/persistencia
 Services/          Consultas y lógica de aplicación
 Validators/        Validaciones compartidas
+Tests/             Pruebas unitarias, integración y E2E
 frontend/src/      Componentes y estilos React
 wwwroot/           Build estático servido por ASP.NET Core
 ```
@@ -94,4 +95,24 @@ Los errores inesperados se registran como Error y las excepciones esperadas como
 
 ## Pruebas
 
-El repositorio no contiene actualmente proyectos de pruebas automatizadas. `DGII.Api.http` incluye una petición HTTP de ejemplo para comprobar el endpoint de salud.
+La suite está en `Tests/DGII.Api.Tests.csproj` y usa xUnit. Las pruebas de integración y E2E usan SQLite en memoria, así que no requieren conectarse a SQL Server ni alteran la base de desarrollo.
+
+Ejecuta toda la suite desde la raíz del repositorio:
+
+```powershell
+dotnet test Tests/DGII.Api.Tests.csproj
+```
+
+Las categorías pueden ejecutarse por separado:
+
+```powershell
+dotnet test Tests/DGII.Api.Tests.csproj --filter "Category=Unit"
+dotnet test Tests/DGII.Api.Tests.csproj --filter "Category=Integration"
+dotnet test Tests/DGII.Api.Tests.csproj --filter "Category=EndToEnd"
+```
+
+- **Unit:** validador de RNC/cédula y servicio de salud.
+- **Integration:** servicios de contribuyentes/comprobantes con EF Core y SQLite.
+- **EndToEnd:** solicitudes HTTP al host ASP.NET Core de prueba; verifica rutas, filtros, paginación y respuestas de error.
+
+`DGII.Api.http` también conserva una petición manual de ejemplo para comprobar el endpoint de salud.

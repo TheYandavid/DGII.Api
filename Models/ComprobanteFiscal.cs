@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DGII.Api.Models;
 
+//Creacion del modelo ComprobanteFiscal que representa un comprobante fiscal en la base de datos//
 public class ComprobanteFiscal
 {
     public const string EstadoActivo = "ACTIVO";

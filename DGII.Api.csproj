@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <Content Remove="frontend\**\*" />
+    <Content Remove="Tests\**\*" />
+    <Compile Remove="Tests\**\*.cs" />
   </ItemGroup>
 
 </Project>
