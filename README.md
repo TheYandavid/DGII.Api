@@ -13,8 +13,6 @@ Aplicación web para consultar contribuyentes y comprobantes fiscales. Incluye u
 - Respuestas de error con Problem Details, códigos HTTP adecuados y `traceId` para correlación con los logs.
 - Datos de muestra opcionales para el entorno de desarrollo.
 
-> **Nota sobre el cálculo del ejemplo:** la suma que muestra la vista de comprobantes corresponde a la página visible. En los datos de muestra actuales, el contribuyente `98754321012` tiene cuatro comprobantes, con ITBIS de $36.00, $180.00, $90.00 y $27.09; el total de todos es $333.09 y el de los activos es $243.09. Los $216.00 del ejemplo corresponden únicamente a los dos primeros comprobantes. Para que el proyecto reproduzca ese resultado, hay que ajustar el catálogo de muestra o acordar una regla que excluya los otros dos.
-
 ## Tecnologías
 
 ### Backend
@@ -95,6 +93,7 @@ Los errores inesperados se registran como Error y las excepciones esperadas como
 
 ## Pruebas
 
+<<<<<<< HEAD
 La suite está en `Tests/DGII.Api.Tests.csproj` y usa xUnit. Las pruebas de integración y E2E usan SQLite en memoria, así que no requieren conectarse a SQL Server ni alteran la base de desarrollo.
 
 Ejecuta toda la suite desde la raíz del repositorio:
@@ -116,3 +115,6 @@ dotnet test Tests/DGII.Api.Tests.csproj --filter "Category=EndToEnd"
 - **EndToEnd:** solicitudes HTTP al host ASP.NET Core de prueba; verifica rutas, filtros, paginación y respuestas de error.
 
 `DGII.Api.http` también conserva una petición manual de ejemplo para comprobar el endpoint de salud.
+=======
+El repositorio no contiene actualmente proyectos de pruebas automatizadas. `DGII.Api.http` incluye una petición HTTP de ejemplo para comprobar el endpoint de salud.
+>>>>>>> bdd0e686a8b912222560b64121f40af0019c93d1
