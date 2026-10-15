@@ -13,8 +13,6 @@ Aplicación web para consultar contribuyentes y comprobantes fiscales. Incluye u
 - Respuestas de error con Problem Details, códigos HTTP adecuados y `traceId` para correlación con los logs.
 - Datos de muestra opcionales para el entorno de desarrollo.
 
-> **Nota sobre el cálculo del ejemplo:** la suma que muestra la vista de comprobantes corresponde a la página visible. En los datos de muestra actuales, el contribuyente `98754321012` tiene cuatro comprobantes, con ITBIS de $36.00, $180.00, $90.00 y $27.09; el total de todos es $333.09 y el de los activos es $243.09. Los $216.00 del ejemplo corresponden únicamente a los dos primeros comprobantes. Para que el proyecto reproduzca ese resultado, hay que ajustar el catálogo de muestra o acordar una regla que excluya los otros dos.
-
 ## Tecnologías
 
 ### Backend
