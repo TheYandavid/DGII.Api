@@ -25,6 +25,6 @@ public sealed class SqliteTestModelCustomizer(ModelCustomizerDependencies depend
         modelBuilder.Entity<ComprobanteFiscal>().ToTable(table =>
             table.HasCheckConstraint(
                 "CK_ComprobanteFiscal_Estado",
-                "[Estado] IN ('ACTIVO', 'INACTIVO')"));
+                "[Estado] IN ('VIGENTE', 'VENCIDO')"));
     }
 }

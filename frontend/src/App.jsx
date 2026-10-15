@@ -39,8 +39,10 @@ function Icon({ name, size = 20 }) {
 }
 
 function StatusBadge({ value }) {
-  const active = String(value).toUpperCase() === 'ACTIVO';
-  return <span className={`status-badge ${active ? 'is-active' : 'is-inactive'}`}><span />{value}</span>;
+  const status = String(value).toUpperCase();
+  const active = status === 'VIGENTE' || status === 'ACTIVO';
+  const label = status === 'VIGENTE' ? 'Vigente' : status === 'VENCIDO' ? 'Vencido' : value;
+  return <span className={`status-badge ${active ? 'is-active' : 'is-inactive'}`}><span />{label}</span>;
 }
 
 function EmptyState({ loading, error, columns, emptyText }) {
@@ -204,7 +206,7 @@ function ComprobantesView({ initialRnc }) {
   }, [applied, page, pageSize]);
 
   const totalItbis = useMemo(() => result.data.reduce((sum, receipt) => sum + Number(receipt.itbis18 || 0), 0), [result.data]);
-  const activeCount = result.data.filter((receipt) => receipt.estado?.toUpperCase() === 'ACTIVO').length;
+  const vigenteCount = result.data.filter((receipt) => receipt.estado?.toUpperCase() === 'VIGENTE').length;
 
   function updateFilter(event) {
     const { name, value } = event.target;
@@ -228,7 +230,7 @@ function ComprobantesView({ initialRnc }) {
   return <>
     <section className="metrics-grid">
       <MetricCard label="Comprobantes" value={loading ? '—' : result.total.toLocaleString('es-DO')} detail="Coinciden con la consulta" icon="receipt" tone="green" />
-      <MetricCard label="Activos en vista" value={loading ? '—' : activeCount.toLocaleString('es-DO')} detail="Documentos vigentes" icon="check" tone="mint" />
+      <MetricCard label="Vigentes en vista" value={loading ? '—' : vigenteCount.toLocaleString('es-DO')} detail="Documentos vigentes" icon="check" tone="mint" />
       <MetricCard label="ITBIS de la página" value={loading ? '—' : money.format(totalItbis)} detail="Suma de los registros visibles" icon="chart" tone="gold" />
     </section>
 
@@ -240,7 +242,7 @@ function ComprobantesView({ initialRnc }) {
       <form className="filter-bar receipt-filters" onSubmit={search}>
         <label className="filter-field"><span>RNC / Cédula</span><input name="rncCedula" value={filters.rncCedula} onChange={updateFilter} placeholder="Solo números" inputMode="numeric" pattern="[0-9]*" maxLength={11} /></label>
         <label className="filter-field"><span>Número de comprobante (NCF)</span><input name="ncf" value={filters.ncf} onChange={updateFilter} placeholder="Ej. B0100000001" /></label>
-        <label className="filter-field"><span>Estado</span><select name="estado" value={filters.estado} onChange={updateFilter}><option value="">Todos los estados</option><option>ACTIVO</option><option>INACTIVO</option></select></label>
+        <label className="filter-field"><span>Estado</span><select name="estado" value={filters.estado} onChange={updateFilter}><option value="">Todos los estados</option><option value="VIGENTE">Vigente</option><option value="VENCIDO">Vencido</option></select></label>
         <div className="filter-actions"><button className="button button-primary" type="submit"><Icon name="search" size={16} />Buscar</button><button className="button button-quiet" type="button" onClick={clearFilters}>Limpiar</button></div>
       </form>
       <div className="table-scroll"><table className="data-table receipts-table">

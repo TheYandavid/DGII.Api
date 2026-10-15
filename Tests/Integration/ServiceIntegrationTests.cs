@@ -93,7 +93,7 @@ public class ServiceIntegrationTests
         var receipts = await service.GetByRncCedulaAsync("98754321012");
 
         Assert.Equal(2, receipts.Count);
-        Assert.Contains(receipts, receipt => receipt.Estado == "ACTIVO");
-        Assert.Contains(receipts, receipt => receipt.Estado == "INACTIVO");
+        Assert.Contains(receipts, receipt => receipt.Estado == "VIGENTE");
+        Assert.Contains(receipts, receipt => receipt.Estado == "VENCIDO");
     }
 }

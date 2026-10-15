@@ -83,9 +83,9 @@ public class ContribuyenteService : IContribuyenteService
                 c.Nombre,
                 c.Tipo,
                 c.Estatus,
-                c.ComprobantesFiscales.Count(f => f.Estado == ComprobanteFiscal.EstadoActivo),
+                c.ComprobantesFiscales.Count(f => f.Estado == ComprobanteFiscal.EstadoVigente),
                 c.ComprobantesFiscales
-                    .Where(f => f.Estado == ComprobanteFiscal.EstadoActivo)
+                    .Where(f => f.Estado == ComprobanteFiscal.EstadoVigente)
                     .Sum(f => (decimal?)f.Itbis18) ?? 0m))
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -98,8 +98,8 @@ public class ContribuyenteService : IContribuyenteService
         c.Nombre,
         c.Tipo,
         c.Estatus,
-        c.ComprobantesFiscales.Count(f => f.Estado == ComprobanteFiscal.EstadoActivo),
+        c.ComprobantesFiscales.Count(f => f.Estado == ComprobanteFiscal.EstadoVigente),
         c.ComprobantesFiscales
-            .Where(f => f.Estado == ComprobanteFiscal.EstadoActivo)
+            .Where(f => f.Estado == ComprobanteFiscal.EstadoVigente)
             .Sum(f => (decimal?)f.Itbis18) ?? 0m);
 }

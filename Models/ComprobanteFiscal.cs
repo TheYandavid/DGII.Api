@@ -6,8 +6,8 @@ namespace DGII.Api.Models;
 //Creacion del modelo ComprobanteFiscal que representa un comprobante fiscal en la base de datos//
 public class ComprobanteFiscal
 {
-    public const string EstadoActivo = "ACTIVO";
-    public const string EstadoInactivo = "INACTIVO";
+    public const string EstadoVigente = "VIGENTE";
+    public const string EstadoVencido = "VENCIDO";
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -31,7 +31,7 @@ public class ComprobanteFiscal
 
     [Required]
     [MaxLength(10)]
-    [RegularExpression($"^({EstadoActivo}|{EstadoInactivo})$")]
+    [RegularExpression($"^({EstadoVigente}|{EstadoVencido})$")]
     public string Estado { get; set; } = string.Empty;
 
     public DateTime FechaRegistro { get; set; }

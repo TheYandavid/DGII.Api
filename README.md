@@ -79,7 +79,7 @@ Desde `frontend`, ejecuta `npm run build`. Vite genera los archivos compilados e
 | `GET` | `/api/contribuyentes/buscar?nombre=Juan` | Búsqueda por nombre, RNC/cédula, tipo o estatus. |
 | `GET` | `/api/contribuyentes/{rncCedula}` | Detalle y agregados del contribuyente. |
 | `GET` | `/api/contribuyentes/{rncCedula}/comprobantes` | Todos los comprobantes del contribuyente, incluidos los inactivos. |
-| `GET` | `/api/comprobantes?page=1&pageSize=10` | Listado paginado con filtros opcionales por RNC/cédula, NCF y estado. |
+| `GET` | `/api/comprobantes?page=1&pageSize=10` | Listado paginado con filtros opcionales por RNC/cédula, NCF y estado (`VIGENTE` o `VENCIDO`). |
 | `GET` | `/api/reportes/itbis-por-contribuyente` | ITBIS y monto agrupados por contribuyente; permite filtrar por tipo y estatus. |
 | `GET` | `/api/reportes/resumen` | Resumen global de contribuyentes y comprobantes activos. |
 

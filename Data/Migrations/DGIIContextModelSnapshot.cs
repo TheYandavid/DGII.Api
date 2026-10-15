@@ -70,7 +70,7 @@ namespace DGII.Api.Data.Migrations
 
                     b.ToTable("ComprobantesFiscales", t =>
                         {
-                            t.HasCheckConstraint("CK_ComprobanteFiscal_Estado", "[Estado] IN (N'ACTIVO', N'INACTIVO')");
+                            t.HasCheckConstraint("CK_ComprobanteFiscal_Estado", "[Estado] IN (N'VIGENTE', N'VENCIDO')");
                         });
                 });
 

@@ -69,7 +69,7 @@ public class DGIIContext : DbContext
             {
                 table.HasCheckConstraint(
                     "CK_ComprobanteFiscal_Estado",
-                    $"[Estado] IN (N'{ComprobanteFiscal.EstadoActivo}', N'{ComprobanteFiscal.EstadoInactivo}')");
+                    $"[Estado] IN (N'{ComprobanteFiscal.EstadoVigente}', N'{ComprobanteFiscal.EstadoVencido}')");
             });
 
             entity.HasKey(e => e.Id);

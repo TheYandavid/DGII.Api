@@ -77,7 +77,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
                 FechaEmision = new DateTime(2024, 2, 1),
                 Monto = 100m,
                 Itbis18 = 18m,
-                Estado = ComprobanteFiscal.EstadoActivo,
+                Estado = ComprobanteFiscal.EstadoVigente,
                 FechaRegistro = new DateTime(2024, 2, 1)
             },
             new ComprobanteFiscal
@@ -87,7 +87,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
                 FechaEmision = new DateTime(2024, 2, 2),
                 Monto = 50m,
                 Itbis18 = 9m,
-                Estado = ComprobanteFiscal.EstadoInactivo,
+                Estado = ComprobanteFiscal.EstadoVencido,
                 FechaRegistro = new DateTime(2024, 2, 2)
             },
             new ComprobanteFiscal
@@ -97,7 +97,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
                 FechaEmision = new DateTime(2024, 2, 3),
                 Monto = 25m,
                 Itbis18 = 4.5m,
-                Estado = ComprobanteFiscal.EstadoActivo,
+                Estado = ComprobanteFiscal.EstadoVigente,
                 FechaRegistro = new DateTime(2024, 2, 3)
             });
 

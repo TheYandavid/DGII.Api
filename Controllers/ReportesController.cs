@@ -1,5 +1,6 @@
 
 using DGII.Api.Data;
+using DGII.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,17 +42,17 @@ public class ReportesController : ControllerBase
 
                 CantidadComprobantes = _context.ComprobantesFiscales
                     .Count(f => f.RncCedula == c.RncCedula
-                             && f.Estado == "ACTIVO"),
+                             && f.Estado == ComprobanteFiscal.EstadoVigente),
 
                 TotalMonto = _context.ComprobantesFiscales
                     .Where(f => f.RncCedula == c.RncCedula
-                             && f.Estado == "ACTIVO")
+                             && f.Estado == ComprobanteFiscal.EstadoVigente)
                     .Select(f => (decimal?)f.Monto)
                     .Sum() ?? 0m,
 
                 TotalItbis = _context.ComprobantesFiscales
                     .Where(f => f.RncCedula == c.RncCedula
-                             && f.Estado == "ACTIVO")
+                             && f.Estado == ComprobanteFiscal.EstadoVigente)
                     .Select(f => (decimal?)f.Itbis18)
                     .Sum() ?? 0m
             })
@@ -66,7 +67,7 @@ public class ReportesController : ControllerBase
     {
         var comprobantesActivos = _context.ComprobantesFiscales
             .AsNoTracking()
-            .Where(f => f.Estado == "ACTIVO");
+            .Where(f => f.Estado == ComprobanteFiscal.EstadoVigente);
 
         var totalContribuyentes =
             await _context.Contribuyentes.CountAsync();

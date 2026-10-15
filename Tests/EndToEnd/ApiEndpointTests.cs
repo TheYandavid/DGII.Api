@@ -63,7 +63,7 @@ public class ApiEndpointTests : IClassFixture<ApiFactory>
 
     [Fact]
     [Trait("Category", "EndToEnd")]
-    public async Task GetContributorReceipts_ReturnsActiveAndInactiveDocuments()
+    public async Task GetContributorReceipts_ReturnsVigenteAndVencidoDocuments()
     {
         using var response = await _client.GetAsync("/api/contribuyentes/98754321012/comprobantes");
         using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
@@ -71,7 +71,7 @@ public class ApiEndpointTests : IClassFixture<ApiFactory>
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var receipts = body.RootElement.EnumerateArray().ToArray();
         Assert.Equal(2, receipts.Length);
-        Assert.Contains(receipts, receipt => receipt.GetProperty("estado").GetString() == "INACTIVO");
+        Assert.Contains(receipts, receipt => receipt.GetProperty("estado").GetString() == "VENCIDO");
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class ApiEndpointTests : IClassFixture<ApiFactory>
     public async Task GetComprobantes_AppliesRncAndStatusFilters()
     {
         using var response = await _client.GetAsync(
-            "/api/comprobantes?page=1&pageSize=10&rncCedula=98754321012&estado=ACTIVO");
+            "/api/comprobantes?page=1&pageSize=10&rncCedula=98754321012&estado=VIGENTE");
         using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
