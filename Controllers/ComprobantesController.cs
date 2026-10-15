@@ -28,7 +28,12 @@ public class ComprobantesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         if (page < 1 || pageSize < 1)
-            return BadRequest("Parámetros de paginación inválidos.");
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Paginación inválida",
+                detail: "La página y el tamaño deben ser mayores que cero.");
+        }
 
         pageSize = Math.Min(pageSize, 100);
 

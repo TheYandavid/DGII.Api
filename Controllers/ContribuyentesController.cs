@@ -1,4 +1,3 @@
-using DGII.Api.Exceptions;
 using DGII.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +26,12 @@ public class ContribuyentesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         if (page < 1 || pageSize < 1)
-            return BadRequest("La página y el tamaño deben ser mayores que cero.");
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Paginación inválida",
+                detail: "La página y el tamaño deben ser mayores que cero.");
+        }
 
         pageSize = Math.Min(pageSize, 100);
 
@@ -64,22 +68,11 @@ public class ContribuyentesController : ControllerBase
         string rncCedula,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var data = await _contribuyenteService.GetByRncCedulaAsync(
-                rncCedula,
-                cancellationToken);
+        var data = await _contribuyenteService.GetByRncCedulaAsync(
+            rncCedula,
+            cancellationToken);
 
-            return Ok(data);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound(new { mensaje = "Contribuyente no encontrado." });
-        }
-        catch (ArgumentException exception)
-        {
-            return BadRequest(new { mensaje = exception.Message });
-        }
+        return Ok(data);
     }
 
     // GET: api/contribuyentes/98754321012/comprobantes
@@ -88,28 +81,11 @@ public class ContribuyentesController : ControllerBase
         string rncCedula,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var data = await _comprobanteFiscalService.GetByRncCedulaAsync(
-                rncCedula,
-                cancellationToken);
+        var data = await _comprobanteFiscalService.GetByRncCedulaAsync(
+            rncCedula,
+            cancellationToken);
 
-            return Ok(data);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound(new
-            {
-                mensaje = "Contribuyente no encontrado."
-            });
-        }
-        catch (ArgumentException exception)
-        {
-            return BadRequest(new
-            {
-                mensaje = exception.Message
-            });
-        }
+        return Ok(data);
     }
 }   
 

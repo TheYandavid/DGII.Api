@@ -1,12 +1,15 @@
 
 using DGII.Api.Data;
 using DGII.Api.Interfaces;
+using DGII.Api.Middleware;
 using DGII.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
@@ -38,10 +41,20 @@ if (app.Environment.IsDevelopment())
         var seeder = scope.ServiceProvider
             .GetRequiredService<IDevelopmentDataSeeder>();
 
-        await seeder.SeedAsync();
+        try
+        {
+            await seeder.SeedAsync();
+        }
+        catch (Exception exception)
+        {
+            app.Logger.LogCritical(exception, "Development data seeding failed during application startup.");
+            throw;
+        }
     }
 }
 
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 app.UseHttpsRedirection();
 app.UseDefaultFiles();   
 app.UseStaticFiles();    

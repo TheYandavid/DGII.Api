@@ -113,7 +113,9 @@ function ContribuyentesView({ onOpenReceipts }) {
   const activeCount = result.data.filter((taxpayer) => taxpayer.estatus?.toUpperCase() === 'ACTIVO').length;
 
   function updateFilter(event) {
-    setFilters((current) => ({ ...current, [event.target.name]: event.target.value }));
+    const { name, value } = event.target;
+    const nextValue = name === 'rncCedula' ? value.replace(/\D/g, '') : value;
+    setFilters((current) => ({ ...current, [name]: nextValue }));
   }
 
   function search(event) {
@@ -143,7 +145,7 @@ function ContribuyentesView({ onOpenReceipts }) {
       </div>
       <form className="filter-bar" onSubmit={search}>
         <label className="filter-field search-field"><span>Nombre o razón social</span><div className="input-with-icon"><Icon name="search" size={17} /><input name="nombre" value={filters.nombre} onChange={updateFilter} placeholder="Buscar por nombre…" /></div></label>
-        <label className="filter-field"><span>RNC / Cédula</span><input name="rncCedula" value={filters.rncCedula} onChange={updateFilter} placeholder="000-0000000-0" /></label>
+        <label className="filter-field"><span>RNC / Cédula</span><input name="rncCedula" value={filters.rncCedula} onChange={updateFilter} placeholder="Ej. 00101564321" inputMode="numeric" pattern="[0-9]*" maxLength={11} /></label>
         <label className="filter-field"><span>Tipo de contribuyente</span><select name="tipo" value={filters.tipo} onChange={updateFilter}><option value="">Todos los tipos</option><option>PERSONA FISICA</option><option>PERSONA JURIDICA</option></select></label>
         <label className="filter-field"><span>Estatus</span><select name="estatus" value={filters.estatus} onChange={updateFilter}><option value="">Todos</option><option>ACTIVO</option><option>INACTIVO</option></select></label>
         <div className="filter-actions"><button className="button button-primary" type="submit"><Icon name="search" size={16} />Buscar</button><button className="button button-quiet" type="button" onClick={clearFilters}>Limpiar</button></div>
@@ -205,7 +207,9 @@ function ComprobantesView({ initialRnc }) {
   const activeCount = result.data.filter((receipt) => receipt.estado?.toUpperCase() === 'ACTIVO').length;
 
   function updateFilter(event) {
-    setFilters((current) => ({ ...current, [event.target.name]: event.target.value }));
+    const { name, value } = event.target;
+    const nextValue = name === 'rncCedula' ? value.replace(/\D/g, '') : value;
+    setFilters((current) => ({ ...current, [name]: nextValue }));
   }
 
   function search(event) {
@@ -234,7 +238,7 @@ function ComprobantesView({ initialRnc }) {
         <span className="record-chip"><span className="live-dot" />{loading ? 'Actualizando' : `${result.total.toLocaleString('es-DO')} registros`}</span>
       </div>
       <form className="filter-bar receipt-filters" onSubmit={search}>
-        <label className="filter-field"><span>RNC / Cédula</span><input name="rncCedula" value={filters.rncCedula} onChange={updateFilter} placeholder="Identificación fiscal" /></label>
+        <label className="filter-field"><span>RNC / Cédula</span><input name="rncCedula" value={filters.rncCedula} onChange={updateFilter} placeholder="Solo números" inputMode="numeric" pattern="[0-9]*" maxLength={11} /></label>
         <label className="filter-field"><span>Número de comprobante (NCF)</span><input name="ncf" value={filters.ncf} onChange={updateFilter} placeholder="Ej. B0100000001" /></label>
         <label className="filter-field"><span>Estado</span><select name="estado" value={filters.estado} onChange={updateFilter}><option value="">Todos los estados</option><option>ACTIVO</option><option>INACTIVO</option></select></label>
         <div className="filter-actions"><button className="button button-primary" type="submit"><Icon name="search" size={16} />Buscar</button><button className="button button-quiet" type="button" onClick={clearFilters}>Limpiar</button></div>

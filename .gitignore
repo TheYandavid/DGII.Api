@@ -1,0 +1,14 @@
+# Compilación y caché de .NET
+**/bin/
+**/obj/
+
+# Dependencias y build local de React/Vite
+frontend/node_modules/
+
+# Configuración local de Visual Studio
+.vs/
+*.user
+*.suo
+
+# NOTA: wwwroot se conserva versionado porque ASP.NET Core sirve desde allí
+# el build de React y no ejecuta Vite automáticamente al arrancar.
