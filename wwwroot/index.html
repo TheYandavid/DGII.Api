@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DGII · Contribuyentes e ITBIS</title>
+<style>
+  :root {
+    --ink: #17212b;
+    --muted: #5d6b79;
+    --line: #d9dfe5;
+    --paper: #f5f7f9;
+    --card: #ffffff;
+    --brand: #214F1F;
+    --brand-soft: #e6efe5;
+    --ok: #2d7a2b;
+    --ok-bg: #e3f1e2;
+    --off: #8a3a1f;
+    --off-bg: #f8e6df;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.45;
+  }
+  header { background: var(--brand); color: #fff; padding: 22px 24px 0; }
+  header h1 { margin: 0; font-size: 1.35rem; font-weight: 600; }
+  header p { margin: 4px 0 16px; color: #dbe8da; font-size: .92rem; }
+  nav { display: flex; gap: 4px; }
+  nav button {
+    border: 0; background: transparent; color: #dbe8da;
+    padding: 10px 18px; font: inherit; cursor: pointer;
+    border-radius: 6px 6px 0 0;
+  }
+  nav button:hover { background: rgba(255,255,255,.12); }
+  nav button[aria-selected="true"] { background: var(--paper); color: var(--brand); font-weight: 600; }
+  nav button:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 3px solid #f0b429; outline-offset: 1px;
+  }
+  main { max-width: 1050px; margin: 0 auto; padding: 24px; }
+  .panel[hidden] { display: none; }
+
+  .summary { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+  .summary div { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 12px 18px; min-width: 190px; }
+  .summary small { display: block; color: var(--muted); font-size: .8rem; }
+  .summary strong { font-size: 1.4rem; color: var(--brand); font-variant-numeric: tabular-nums; }
+
+  form.filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; margin-bottom: 16px; }
+  label { display: flex; flex-direction: column; font-size: .82rem; color: var(--muted); gap: 3px; }
+  input, select {
+    font: inherit; padding: 7px 10px; border: 1px solid var(--line);
+    border-radius: 5px; background: #fff; color: var(--ink); min-width: 150px;
+  }
+  button.action {
+    font: inherit; padding: 8px 16px; border-radius: 5px; cursor: pointer;
+    border: 1px solid var(--brand); background: var(--brand); color: #fff;
+  }
+  button.action:hover:not(:disabled) { background: #1a3f18; }
+  button.action.secondary { background: #fff; color: var(--brand); }
+  button.action.secondary:hover:not(:disabled) { background: var(--brand-soft); }
+
+  .table-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { background: var(--brand-soft); color: var(--brand); font-weight: 600; }
+  tbody tr:hover { background: #f2f7f1; }
+  tr:last-child td { border-bottom: 0; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tag { padding: 2px 9px; border-radius: 99px; font-size: .8rem; font-weight: 600; }
+  .tag.on { background: var(--ok-bg); color: var(--ok); }
+  .tag.off { background: var(--off-bg); color: var(--off); }
+
+  .pager { display: flex; align-items: center; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+  .pager span { color: var(--muted); font-size: .9rem; }
+  .pager button:disabled { opacity: .45; cursor: not-allowed; }
+  .msg { padding: 24px; text-align: center; color: var(--muted); }
+  .msg.error { color: var(--off); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Dirección General de Impuestos Internos</h1>
+  <p>Consulta de contribuyentes y ITBIS de comprobantes fiscales</p>
+  <nav role="tablist">
+    <button role="tab" id="tab-contrib" aria-selected="true" aria-controls="panel-contrib">Contribuyentes</button>
+    <button role="tab" id="tab-comp" aria-selected="false" aria-controls="panel-comp">Comprobantes fiscales</button>
+  </nav>
+</header>
+
+<main>
+  <!-- CONTRIBUYENTES -->
+  <section class="panel" id="panel-contrib" role="tabpanel">
+    <div class="summary" id="summary-contrib" hidden>
+      <div><small>Contribuyentes encontrados</small><strong id="sum-count">0</strong></div>
+      <div><small id="sum-label">ITBIS de esta página</small><strong id="sum-itbis">0.00</strong></div>
+    </div>
+
+    <form class="filters" id="form-contrib">
+      <label>Nombre<input name="nombre" type="text" placeholder="Ej. Juan"></label>
+      <label>RNC / Cédula<input name="rncCedula" type="text"></label>
+      <label>Tipo
+        <select name="tipo">
+          <option value="">Todos</option>
+          <option>PERSONA FISICA</option>
+          <option>PERSONA JURIDICA</option>
+        </select>
+      </label>
+      <label>Estatus
+        <select name="estatus">
+          <option value="">Todos</option>
+          <option>ACTIVO</option>
+          <option>INACTIVO</option>
+        </select>
+      </label>
+      <button class="action" type="submit">Buscar</button>
+      <button class="action secondary" type="button" id="clear-contrib">Limpiar</button>
+    </form>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>RNC / Cédula</th><th>Nombre</th><th>Tipo</th><th>Estatus</th>
+            <th class="num">Comprobantes activos</th><th class="num">ITBIS total (RD$)</th>
+          </tr>
+        </thead>
+        <tbody id="body-contrib"></tbody>
+      </table>
+    </div>
+    <div class="pager" id="pager-contrib">
+      <button class="action secondary" id="prev-contrib">Anterior</button>
+      <span id="info-contrib"></span>
+      <button class="action secondary" id="next-contrib">Siguiente</button>
+      <label style="flex-direction:row;align-items:center;gap:6px">Por página
+        <select id="size-contrib" style="min-width:70px"><option>5</option><option selected>10</option><option>25</option><option>50</option></select>
+      </label>
+    </div>
+  </section>
+
+  <!-- COMPROBANTES -->
+  <section class="panel" id="panel-comp" role="tabpanel" hidden>
+    <form class="filters" id="form-comp">
+      <label>RNC / Cédula<input name="rncCedula" type="text"></label>
+      <label>NCF<input name="ncf" type="text" placeholder="Ej. E31"></label>
+      <label>Estado
+        <select name="estado">
+          <option value="">Todos</option>
+          <option>ACTIVO</option>
+          <option>ANULADO</option>
+        </select>
+      </label>
+      <button class="action" type="submit">Buscar</button>
+      <button class="action secondary" type="button" id="clear-comp">Limpiar</button>
+    </form>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>RNC / Cédula</th><th>NCF</th><th>Fecha de emisión</th>
+            <th class="num">Monto (RD$)</th><th class="num">ITBIS 18% (RD$)</th><th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="body-comp"></tbody>
+      </table>
+    </div>
+    <div class="pager">
+      <button class="action secondary" id="prev-comp">Anterior</button>
+      <span id="info-comp"></span>
+      <button class="action secondary" id="next-comp">Siguiente</button>
+      <label style="flex-direction:row;align-items:center;gap:6px">Por página
+        <select id="size-comp" style="min-width:70px"><option>5</option><option selected>10</option><option>25</option><option>50</option></select>
+      </label>
+    </div>
+  </section>
+</main>
+
+<script>
+  // Mismo origen: la página se sirve desde el propio API (wwwroot), no hace falta CORS.
+  const API = "/api";
+  const money = n => Number(n ?? 0).toLocaleString("es-DO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const tag = s => `<span class="tag ${String(s).toUpperCase() === "ACTIVO" ? "on" : "off"}">${esc(s)}</span>`;
+  const $ = id => document.getElementById(id);
+
+  async function getJson(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`El servidor respondió ${res.status}.`);
+    return res.json();
+  }
+  const qs = obj => new URLSearchParams(Object.entries(obj).filter(([, v]) => v !== "" && v != null)).toString();
+  const showMsg = (tbody, cols, text, error = false) =>
+    tbody.innerHTML = `<tr><td colspan="${cols}" class="msg ${error ? "error" : ""}">${esc(text)}</td></tr>`;
+
+  /* ---------- Pestañas ---------- */
+  const tabs = { "tab-contrib": "panel-contrib", "tab-comp": "panel-comp" };
+  Object.entries(tabs).forEach(([tabId, panelId]) => {
+    $(tabId).addEventListener("click", () => {
+      Object.entries(tabs).forEach(([t, p]) => {
+        $(t).setAttribute("aria-selected", t === tabId);
+        $(p).hidden = p !== panelId;
+      });
+      if (tabId === "tab-comp" && !compLoaded) loadComp();
+    });
+  });
+
+  /* ---------- Contribuyentes ---------- */
+  let cPage = 1, cTotal = 0;
+  const cForm = $("form-contrib");
+
+  async function loadContrib() {
+    const body = $("body-contrib");
+    const f = Object.fromEntries(new FormData(cForm));
+    const filtrando = Object.values(f).some(v => v.trim() !== "");
+    const size = Number($("size-contrib").value);
+    showMsg(body, 6, "Cargando…");
+
+    try {
+      let rows;
+      if (filtrando) {
+        // /buscar devuelve la lista completa sin paginar
+        rows = await getJson(`${API}/contribuyentes/buscar?${qs(f)}`);
+        cTotal = rows.length;
+        $("pager-contrib").hidden = true;
+        $("sum-label").textContent = "ITBIS de los resultados";
+      } else {
+        const r = await getJson(`${API}/contribuyentes?page=${cPage}&pageSize=${size}`);
+        rows = r.data; cTotal = r.total;
+        $("pager-contrib").hidden = false;
+        $("sum-label").textContent = "ITBIS de esta página";
+        const pages = Math.max(1, Math.ceil(cTotal / size));
+        $("info-contrib").textContent = `Página ${cPage} de ${pages} · ${cTotal} contribuyentes`;
+        $("prev-contrib").disabled = cPage <= 1;
+        $("next-contrib").disabled = cPage >= pages;
+      }
+
+      $("summary-contrib").hidden = false;
+      $("sum-count").textContent = cTotal;
+      $("sum-itbis").textContent = "RD$ " + money(rows.reduce((a, r) => a + r.totalItbis, 0));
+
+      if (!rows.length) return showMsg(body, 6, "No hay contribuyentes que coincidan con la búsqueda.");
+      body.innerHTML = rows.map(r => `
+        <tr>
+          <td>${esc(r.rncCedula)}</td><td>${esc(r.nombre)}</td><td>${esc(r.tipo)}</td>
+          <td>${tag(r.estatus)}</td>
+          <td class="num">${r.cantidadComprobantesActivos}</td>
+          <td class="num">${money(r.totalItbis)}</td>
+        </tr>`).join("");
+    } catch (e) {
+      showMsg(body, 6, `No se pudo cargar la lista. ${e.message}`, true);
+    }
+  }
+  cForm.addEventListener("submit", e => { e.preventDefault(); cPage = 1; loadContrib(); });
+  $("clear-contrib").addEventListener("click", () => { cForm.reset(); cPage = 1; loadContrib(); });
+  $("prev-contrib").addEventListener("click", () => { cPage--; loadContrib(); });
+  $("next-contrib").addEventListener("click", () => { cPage++; loadContrib(); });
+  $("size-contrib").addEventListener("change", () => { cPage = 1; loadContrib(); });
+
+  /* ---------- Comprobantes ---------- */
+  let compLoaded = false, kPage = 1;
+  const kForm = $("form-comp");
+
+  async function loadComp() {
+    compLoaded = true;
+    const body = $("body-comp");
+    const f = Object.fromEntries(new FormData(kForm));
+    const size = Number($("size-comp").value);
+    showMsg(body, 6, "Cargando…");
+
+    try {
+      const r = await getJson(`${API}/comprobantes?${qs({ ...f, page: kPage, pageSize: size })}`);
+      const pages = Math.max(1, Math.ceil(r.total / size));
+      $("info-comp").textContent = `Página ${kPage} de ${pages} · ${r.total} comprobantes`;
+      $("prev-comp").disabled = kPage <= 1;
+      $("next-comp").disabled = kPage >= pages;
+
+      if (!r.data.length) return showMsg(body, 6, "No hay comprobantes que coincidan con la búsqueda.");
+      body.innerHTML = r.data.map(c => `
+        <tr>
+          <td>${esc(c.rncCedula)}</td><td>${esc(c.ncf)}</td>
+          <td>${new Date(c.fechaEmision).toLocaleDateString("es-DO")}</td>
+          <td class="num">${money(c.monto)}</td><td class="num">${money(c.itbis18)}</td>
+          <td>${tag(c.estado)}</td>
+        </tr>`).join("");
+    } catch (e) {
+      showMsg(body, 6, `No se pudo cargar la lista. ${e.message}`, true);
+    }
+  }
+  kForm.addEventListener("submit", e => { e.preventDefault(); kPage = 1; loadComp(); });
+  $("clear-comp").addEventListener("click", () => { kForm.reset(); kPage = 1; loadComp(); });
+  $("prev-comp").addEventListener("click", () => { kPage--; loadComp(); });
+  $("next-comp").addEventListener("click", () => { kPage++; loadComp(); });
+  $("size-comp").addEventListener("change", () => { kPage = 1; loadComp(); });
+
+  loadContrib();
+</script>
+</body>
+</html>
