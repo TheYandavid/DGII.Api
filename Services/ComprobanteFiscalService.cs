@@ -44,10 +44,11 @@ public class ComprobanteFiscalService : IComprobanteFiscalService
         }
 
         var total = await query.CountAsync(cancellationToken);
-        var data = await MapComprobantes(query)
+        var pagedQuery = query
             .OrderByDescending(c => c.FechaEmision)
             .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+            .Take(pageSize);
+        var data = await MapComprobantes(pagedQuery)
             .ToListAsync(cancellationToken);
 
         return (data, total);
@@ -66,8 +67,11 @@ public class ComprobanteFiscalService : IComprobanteFiscalService
             throw new NotFoundException($"Taxpayer with RNC/Cédula '{normalizedRncCedula}' was not found.");
         }
 
-        return await MapComprobantes(_dbContext.ComprobantesFiscales.Where(c => c.RncCedula == normalizedRncCedula))
-            .OrderBy(c => c.NCF)
+        var query = _dbContext.ComprobantesFiscales
+            .Where(c => c.RncCedula == normalizedRncCedula)
+            .OrderBy(c => c.NCF);
+
+        return await MapComprobantes(query)
             .ToListAsync(cancellationToken);
     }
 

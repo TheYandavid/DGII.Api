@@ -5,6 +5,7 @@ using DGII.Api.Interfaces;
 using DGII.Api.Models;
 using DGII.Api.Validators;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace DGII.Api.Services;
 
@@ -22,11 +23,13 @@ public class ContribuyenteService : IContribuyenteService
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        var query = ContribuyenteItbisQuery().OrderBy(c => c.Nombre);
+        var query = _dbContext.Contribuyentes.AsNoTracking();
         var total = await query.CountAsync(cancellationToken);
         var data = await query
+            .OrderBy(c => c.Nombre)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Select(ContribuyenteItbisProjection)
             .ToListAsync(cancellationToken);
 
         return (data, total);
@@ -39,7 +42,7 @@ public class ContribuyenteService : IContribuyenteService
         string? estatus = null,
         CancellationToken cancellationToken = default)
     {
-        var query = ContribuyenteItbisQuery();
+        var query = _dbContext.Contribuyentes.AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(nombre))
         {
@@ -63,6 +66,7 @@ public class ContribuyenteService : IContribuyenteService
 
         return await query
             .OrderBy(c => c.Nombre)
+            .Select(ContribuyenteItbisProjection)
             .ToListAsync(cancellationToken);
     }
 
@@ -89,18 +93,13 @@ public class ContribuyenteService : IContribuyenteService
             $"Taxpayer with RNC/Cédula '{normalizedRncCedula}' was not found.");
     }
 
-    private IQueryable<ContribuyenteItbisDto> ContribuyenteItbisQuery()
-    {
-        return _dbContext.Contribuyentes
-            .AsNoTracking()
-            .Select(c => new ContribuyenteItbisDto(
-                c.RncCedula,
-                c.Nombre,
-                c.Tipo,
-                c.Estatus,
-                c.ComprobantesFiscales.Count(f => f.Estado == ComprobanteFiscal.EstadoActivo),
-                c.ComprobantesFiscales
-                    .Where(f => f.Estado == ComprobanteFiscal.EstadoActivo)
-                    .Sum(f => (decimal?)f.Itbis18) ?? 0m));
-    }
+    private static readonly Expression<Func<Models.Contribuyente, ContribuyenteItbisDto>> ContribuyenteItbisProjection = c => new(
+        c.RncCedula,
+        c.Nombre,
+        c.Tipo,
+        c.Estatus,
+        c.ComprobantesFiscales.Count(f => f.Estado == ComprobanteFiscal.EstadoActivo),
+        c.ComprobantesFiscales
+            .Where(f => f.Estado == ComprobanteFiscal.EstadoActivo)
+            .Sum(f => (decimal?)f.Itbis18) ?? 0m);
 }
