@@ -81,6 +81,7 @@ public class ComprobanteFiscalService : IComprobanteFiscalService
             .AsNoTracking()
             .Select(c => new ComprobanteFiscalDto(
                 c.RncCedula,
+                c.Contribuyente.Nombre,
                 c.NCF,
                 c.FechaEmision,
                 c.Monto,

@@ -95,5 +95,6 @@ public class ServiceIntegrationTests
         Assert.Equal(2, receipts.Count);
         Assert.Contains(receipts, receipt => receipt.Estado == "VIGENTE");
         Assert.Contains(receipts, receipt => receipt.Estado == "VENCIDO");
+        Assert.All(receipts, receipt => Assert.Equal("ANA PEREZ", receipt.NombreContribuyente));
     }
 }

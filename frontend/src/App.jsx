@@ -40,9 +40,13 @@ function Icon({ name, size = 20 }) {
 
 function StatusBadge({ value }) {
   const status = String(value).toUpperCase();
-  const active = status === 'VIGENTE' || status === 'ACTIVO';
+  const badgeClass = status === 'VIGENTE' || status === 'ACTIVO'
+    ? 'is-active'
+    : status === 'VENCIDO'
+      ? 'is-expired'
+      : 'is-inactive';
   const label = status === 'VIGENTE' ? 'Vigente' : status === 'VENCIDO' ? 'Vencido' : value;
-  return <span className={`status-badge ${active ? 'is-active' : 'is-inactive'}`}><span />{label}</span>;
+  return <span className={`status-badge ${badgeClass}`}><span />{label}</span>;
 }
 
 function EmptyState({ loading, error, columns, emptyText }) {
@@ -246,11 +250,11 @@ function ComprobantesView({ initialRnc }) {
         <div className="filter-actions"><button className="button button-primary" type="submit"><Icon name="search" size={16} />Buscar</button><button className="button button-quiet" type="button" onClick={clearFilters}>Limpiar</button></div>
       </form>
       <div className="table-scroll"><table className="data-table receipts-table">
-        <thead><tr><th>NCF</th><th>RNC / Cédula</th><th>Fecha de emisión</th><th className="align-right">Monto</th><th className="align-right">ITBIS 18%</th><th>Estado</th></tr></thead>
+        <thead><tr><th>NCF</th><th>RNC / Cédula</th><th>Contribuyente</th><th>Fecha de emisión</th><th className="align-right">Monto</th><th className="align-right">ITBIS 18%</th><th>Estado</th></tr></thead>
         <tbody>{loading || error || result.data.length === 0
-          ? <EmptyState loading={loading} error={error} columns={6} emptyText="No hay comprobantes que coincidan con la búsqueda." />
+          ? <EmptyState loading={loading} error={error} columns={7} emptyText="No hay comprobantes que coincidan con la búsqueda." />
           : result.data.map((receipt) => <tr key={receipt.ncf}>
-            <td className="mono ncf-cell">{receipt.ncf}</td><td className="mono">{receipt.rncCedula}</td>
+            <td className="mono ncf-cell">{receipt.ncf}</td><td className="mono">{receipt.rncCedula}</td><td className="person-name">{receipt.nombreContribuyente}</td>
             <td className="date-cell">{date.format(new Date(receipt.fechaEmision))}</td>
             <td className="align-right tabular money-cell">{money.format(receipt.monto || 0)}</td>
             <td className="align-right tabular money-cell">{money.format(receipt.itbis18 || 0)}</td><td><StatusBadge value={receipt.estado} /></td>

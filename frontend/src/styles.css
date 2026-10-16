@@ -123,6 +123,7 @@ h1 { margin-top: 10px; color: #1d3025; font-family: Manrope, sans-serif; font-si
 .status-badge > span { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 .status-badge.is-active { background: #edf6ef; color: #3b8052; }
 .status-badge.is-inactive { background: #f6efeb; color: #a46e50; }
+.status-badge.is-expired { background: #fbecec; color: #b33d3d; }
 .money-cell { color: #314a39 !important; font-weight: 600; }
 .row-action { width: 37px; text-align: right; }
 .text-action { display: inline-grid; width: 29px; height: 29px; place-items: center; border: 0; border-radius: 7px; background: transparent; color: #8a998e; }
@@ -210,7 +211,7 @@ h1 { margin-top: 10px; color: #1d3025; font-family: Manrope, sans-serif; font-si
   .filter-actions { width: 100%; }
   .filter-actions .button { flex: 1; }
   .data-table { min-width: 680px; }
-  .receipts-table { min-width: 630px; }
+  .receipts-table { min-width: 760px; }
   .pagination { align-items: flex-start; flex-direction: column; justify-content: center; padding: 12px 14px; }
   .pagination-controls { width: 100%; justify-content: flex-end; }
   .page-size { margin-right: auto; }

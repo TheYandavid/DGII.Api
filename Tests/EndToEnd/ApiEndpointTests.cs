@@ -86,6 +86,7 @@ public class ApiEndpointTests : IClassFixture<ApiFactory>
         Assert.Equal(1, body.RootElement.GetProperty("total").GetInt32());
         var receipt = Assert.Single(body.RootElement.GetProperty("data").EnumerateArray());
         Assert.Equal("E310000000001", receipt.GetProperty("ncf").GetString());
+        Assert.Equal("ANA PEREZ", receipt.GetProperty("nombreContribuyente").GetString());
     }
 
     [Fact]
